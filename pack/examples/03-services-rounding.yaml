@@ -1,0 +1,33 @@
+id: "03"
+title: "Services sale, rounding edge: half a cent on each line"
+date: 2026-10-05
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: yes
+  sscl_activity: services
+lines:
+  - {description: Item A, amount: "2.75", amount_type: exclusive, codes: [VAT-STD, SSCL-SVC]}
+  - {description: Item B, amount: "2.75", amount_type: exclusive, codes: [VAT-STD, SSCL-SVC]}
+working: |
+  Each line VAT: 2.75 x 18% = 0.495, rounded half up = 0.50
+  Each line SSCL: 2.75 x 1 x 2.5% = 0.06875, rounded = 0.07
+  Line rounding: VAT = 0.50 + 0.50 = 1.00 (document rounding would give 5.50 x 18% = 0.99)
+  SSCL = 0.07 + 0.07 = 0.14, borne by the business
+  Total = 5.50 + 1.00 = 6.50
+expected:
+  lines:
+    - net: "2.75"
+      taxes: {VAT-STD: "0.50", SSCL-SVC: "0.07"}
+    - net: "2.75"
+      taxes: {VAT-STD: "0.50", SSCL-SVC: "0.07"}
+  total: "6.50"
+  postings:
+    - {account: trade_receivables, debit: "6.50"}
+    - {account: revenue, credit: "5.50"}
+    - {account: output_tax_control, credit: "1.00"}
+    - {account: sscl_expense, debit: "0.14"}
+    - {account: sscl_payable, credit: "0.14"}
+  boxes:
+    VAT-RETURN: {"1": "5.50", "4": "1.00"}
+    SSCL-RETURN: {"1": "5.50", "2": "0.14"}

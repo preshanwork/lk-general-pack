@@ -1,0 +1,28 @@
+id: "21"
+title: "Purchase, rounding edge: half a cent on each line"
+date: 2026-09-05
+document: purchase_bill
+answers:
+  registered_vat: yes
+  sscl_liable: no
+  sscl_activity: services
+lines:
+  - {description: Item A, amount: "2.75", amount_type: exclusive, codes: [VAT-STD]}
+  - {description: Item B, amount: "2.75", amount_type: exclusive, codes: [VAT-STD]}
+working: |
+  Each line VAT: 2.75 x 18% = 0.495, rounded half up = 0.50
+  Line rounding: VAT = 0.50 + 0.50 = 1.00 (document rounding would give 5.50 x 18% = 0.99), recoverable
+  Owed to supplier = 5.50 + 1.00 = 6.50
+expected:
+  lines:
+    - net: "2.75"
+      taxes: {VAT-STD: "0.50"}
+    - net: "2.75"
+      taxes: {VAT-STD: "0.50"}
+  total: "6.50"
+  postings:
+    - {account: expense, debit: "5.50"}
+    - {account: input_tax_control, debit: "1.00"}
+    - {account: trade_payables, credit: "6.50"}
+  boxes:
+    VAT-RETURN: {"5": "5.50", "6": "1.00"}

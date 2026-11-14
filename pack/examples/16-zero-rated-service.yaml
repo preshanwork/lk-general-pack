@@ -1,0 +1,22 @@
+id: "16"
+title: "Zero-rated service to an overseas buyer"
+date: 2025-12-10
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: no
+  sscl_activity: services
+lines:
+  - {description: Buying office service, amount: "75000.00", amount_type: exclusive, codes: [VAT-ZERO]}
+working: |
+  Zero-rated: VAT 0.00. Total = 75000.00
+expected:
+  lines:
+    - net: "75000.00"
+      taxes: {VAT-ZERO: "0.00"}
+  total: "75000.00"
+  postings:
+    - {account: trade_receivables, debit: "75000.00"}
+    - {account: revenue, credit: "75000.00"}
+  boxes:
+    VAT-RETURN: {"2": "75000.00"}

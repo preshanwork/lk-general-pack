@@ -1,0 +1,28 @@
+id: "10"
+title: "Registered distributor sale: 25% of turnover liable"
+date: 2026-08-18
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: yes
+  sscl_activity: distributor
+lines:
+  - {description: Distributed goods, amount: "400000.00", amount_type: exclusive, codes: [VAT-STD, SSCL-DIST]}
+working: |
+  VAT: 400000.00 x 18% = 72000.00
+  SSCL base (distributor, 25% = 1/4 liable): 400000.00 x 1/4 = 100000.00; SSCL = 100000.00 x 2.5% = 2500.00, borne by the business
+  Total = 400000.00 + 72000.00 = 472000.00
+expected:
+  lines:
+    - net: "400000.00"
+      taxes: {VAT-STD: "72000.00", SSCL-DIST: "2500.00"}
+  total: "472000.00"
+  postings:
+    - {account: trade_receivables, debit: "472000.00"}
+    - {account: revenue, credit: "400000.00"}
+    - {account: output_tax_control, credit: "72000.00"}
+    - {account: sscl_expense, debit: "2500.00"}
+    - {account: sscl_payable, credit: "2500.00"}
+  boxes:
+    VAT-RETURN: {"1": "400000.00", "4": "72000.00"}
+    SSCL-RETURN: {"1": "400000.00", "2": "2500.00"}

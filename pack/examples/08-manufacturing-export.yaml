@@ -1,0 +1,32 @@
+id: "08"
+title: "Manufacturer: domestic sale plus a zero-rated export line"
+date: 2026-09-10
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: yes
+  sscl_activity: manufacturing
+lines:
+  - {description: Domestic goods, amount: "400000.00", amount_type: exclusive, codes: [VAT-STD, SSCL-MFG]}
+  - {description: Exported goods, amount: "600000.00", amount_type: exclusive, codes: [VAT-ZERO]}
+working: |
+  Line 1 VAT: 400000.00 x 18% = 72000.00
+  Line 1 SSCL: 400000.00 x 17/20 = 340000.00; x 2.5% = 8500.00, borne by the business
+  Line 2: zero-rated export, VAT 0.00, no SSCL code chosen
+  Total = 400000.00 + 72000.00 + 600000.00 = 1072000.00
+expected:
+  lines:
+    - net: "400000.00"
+      taxes: {VAT-STD: "72000.00", SSCL-MFG: "8500.00"}
+    - net: "600000.00"
+      taxes: {VAT-ZERO: "0.00"}
+  total: "1072000.00"
+  postings:
+    - {account: trade_receivables, debit: "1072000.00"}
+    - {account: revenue, credit: "1000000.00"}
+    - {account: output_tax_control, credit: "72000.00"}
+    - {account: sscl_expense, debit: "8500.00"}
+    - {account: sscl_payable, credit: "8500.00"}
+  boxes:
+    VAT-RETURN: {"1": "400000.00", "2": "600000.00", "4": "72000.00"}
+    SSCL-RETURN: {"1": "400000.00", "2": "8500.00"}

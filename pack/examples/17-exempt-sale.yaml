@@ -1,0 +1,22 @@
+id: "17"
+title: "Exempt sale"
+date: 2026-09-03
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: no
+  sscl_activity: services
+lines:
+  - {description: Exempt supply, amount: "40000.00", amount_type: exclusive, codes: [VAT-EX]}
+working: |
+  Exempt: no VAT. Total = 40000.00
+expected:
+  lines:
+    - net: "40000.00"
+      taxes: {VAT-EX: "0"}
+  total: "40000.00"
+  postings:
+    - {account: trade_receivables, debit: "40000.00"}
+    - {account: revenue, credit: "40000.00"}
+  boxes:
+    VAT-RETURN: {"3": "40000.00"}

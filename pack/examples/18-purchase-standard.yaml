@@ -1,0 +1,24 @@
+id: "18"
+title: "Standard-rated purchase, input tax recovered"
+date: 2026-08-08
+document: purchase_bill
+answers:
+  registered_vat: yes
+  sscl_liable: no
+  sscl_activity: services
+lines:
+  - {description: Supplies, amount: "60000.00", amount_type: exclusive, codes: [VAT-STD]}
+working: |
+  VAT: 60000.00 x 18% = 10800.00, recoverable
+  Owed to supplier = 60000.00 + 10800.00 = 70800.00
+expected:
+  lines:
+    - net: "60000.00"
+      taxes: {VAT-STD: "10800.00"}
+  total: "70800.00"
+  postings:
+    - {account: expense, debit: "60000.00"}
+    - {account: input_tax_control, debit: "10800.00"}
+    - {account: trade_payables, credit: "70800.00"}
+  boxes:
+    VAT-RETURN: {"5": "60000.00", "6": "10800.00"}

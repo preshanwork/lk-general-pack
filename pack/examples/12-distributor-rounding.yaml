@@ -1,0 +1,36 @@
+id: "12"
+title: "Distributor sale, rounding edge: half a cent on SSCL"
+date: 2026-10-12
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: yes
+  sscl_activity: distributor
+lines:
+  - {description: Item A, amount: "0.80", amount_type: exclusive, codes: [VAT-STD, SSCL-DIST]}
+  - {description: Item B, amount: "0.80", amount_type: exclusive, codes: [VAT-STD, SSCL-DIST]}
+  - {description: Item C, amount: "0.80", amount_type: exclusive, codes: [VAT-STD, SSCL-DIST]}
+working: |
+  Each line VAT: 0.80 x 18% = 0.144, rounded = 0.14
+  Each line SSCL: 0.80 x 1/4 = 0.20; x 2.5% = 0.005, rounded half up = 0.01
+  Line rounding: VAT = 3 x 0.14 = 0.42 (document rounding: 2.40 x 18% = 0.432, rounded 0.43)
+  SSCL = 3 x 0.01 = 0.03 (document rounding: 0.60 x 2.5% = 0.015, rounded 0.02), borne by the business
+  Total = 2.40 + 0.42 = 2.82
+expected:
+  lines:
+    - net: "0.80"
+      taxes: {VAT-STD: "0.14", SSCL-DIST: "0.01"}
+    - net: "0.80"
+      taxes: {VAT-STD: "0.14", SSCL-DIST: "0.01"}
+    - net: "0.80"
+      taxes: {VAT-STD: "0.14", SSCL-DIST: "0.01"}
+  total: "2.82"
+  postings:
+    - {account: trade_receivables, debit: "2.82"}
+    - {account: revenue, credit: "2.40"}
+    - {account: output_tax_control, credit: "0.42"}
+    - {account: sscl_expense, debit: "0.03"}
+    - {account: sscl_payable, credit: "0.03"}
+  boxes:
+    VAT-RETURN: {"1": "2.40", "4": "0.42"}
+    SSCL-RETURN: {"1": "2.40", "2": "0.03"}

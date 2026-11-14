@@ -1,0 +1,32 @@
+id: "11"
+title: "Distributor sale with two lines"
+date: 2026-09-25
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: yes
+  sscl_activity: distributor
+lines:
+  - {description: Product line A, amount: "120000.00", amount_type: exclusive, codes: [VAT-STD, SSCL-DIST]}
+  - {description: Product line B, amount: "80000.00", amount_type: exclusive, codes: [VAT-STD, SSCL-DIST]}
+working: |
+  Line A VAT: 120000.00 x 18% = 21600.00; SSCL: 120000.00 x 1/4 = 30000.00; x 2.5% = 750.00
+  Line B VAT: 80000.00 x 18% = 14400.00; SSCL: 80000.00 x 1/4 = 20000.00; x 2.5% = 500.00
+  VAT = 21600.00 + 14400.00 = 36000.00; SSCL = 750.00 + 500.00 = 1250.00, borne by the business
+  Total = 200000.00 + 36000.00 = 236000.00
+expected:
+  lines:
+    - net: "120000.00"
+      taxes: {VAT-STD: "21600.00", SSCL-DIST: "750.00"}
+    - net: "80000.00"
+      taxes: {VAT-STD: "14400.00", SSCL-DIST: "500.00"}
+  total: "236000.00"
+  postings:
+    - {account: trade_receivables, debit: "236000.00"}
+    - {account: revenue, credit: "200000.00"}
+    - {account: output_tax_control, credit: "36000.00"}
+    - {account: sscl_expense, debit: "1250.00"}
+    - {account: sscl_payable, credit: "1250.00"}
+  boxes:
+    VAT-RETURN: {"1": "200000.00", "4": "36000.00"}
+    SSCL-RETURN: {"1": "200000.00", "2": "1250.00"}

@@ -1,0 +1,28 @@
+id: "07"
+title: "Manufacturer sale: 85% of turnover liable"
+date: 2026-08-14
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: yes
+  sscl_activity: manufacturing
+lines:
+  - {description: Goods made, amount: "1000000.00", amount_type: exclusive, codes: [VAT-STD, SSCL-MFG]}
+working: |
+  VAT: 1000000.00 x 18% = 180000.00
+  SSCL base (manufacture, 85% = 17/20 liable): 1000000.00 x 17/20 = 850000.00; SSCL = 850000.00 x 2.5% = 21250.00, borne by the business
+  Total = 1000000.00 + 180000.00 = 1180000.00
+expected:
+  lines:
+    - net: "1000000.00"
+      taxes: {VAT-STD: "180000.00", SSCL-MFG: "21250.00"}
+  total: "1180000.00"
+  postings:
+    - {account: trade_receivables, debit: "1180000.00"}
+    - {account: revenue, credit: "1000000.00"}
+    - {account: output_tax_control, credit: "180000.00"}
+    - {account: sscl_expense, debit: "21250.00"}
+    - {account: sscl_payable, credit: "21250.00"}
+  boxes:
+    VAT-RETURN: {"1": "1000000.00", "4": "180000.00"}
+    SSCL-RETURN: {"1": "1000000.00", "2": "21250.00"}

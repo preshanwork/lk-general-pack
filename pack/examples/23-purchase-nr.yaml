@@ -1,0 +1,23 @@
+id: "23"
+title: "Purchase with unrecoverable VAT only"
+date: 2026-09-07
+document: purchase_bill
+answers:
+  registered_vat: yes
+  sscl_liable: no
+  sscl_activity: services
+lines:
+  - {description: Non-claimable item, amount: "12000.00", amount_type: exclusive, codes: [VAT-NR]}
+working: |
+  VAT: 12000.00 x 18% = 2160.00, not recoverable, so part of the expense
+  Expense = 12000.00 + 2160.00 = 14160.00; owed to supplier = 14160.00
+expected:
+  lines:
+    - net: "12000.00"
+      taxes: {VAT-NR: "2160.00"}
+  total: "14160.00"
+  postings:
+    - {account: expense, debit: "14160.00"}
+    - {account: trade_payables, credit: "14160.00"}
+  boxes:
+    VAT-RETURN: {"5": "12000.00"}

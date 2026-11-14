@@ -1,0 +1,22 @@
+id: "22"
+title: "Exempt purchase"
+date: 2026-09-06
+document: purchase_bill
+answers:
+  registered_vat: yes
+  sscl_liable: no
+  sscl_activity: services
+lines:
+  - {description: Exempt service, amount: "15000.00", amount_type: exclusive, codes: [VAT-EX]}
+working: |
+  Exempt: no VAT, no input tax. Owed = 15000.00
+expected:
+  lines:
+    - net: "15000.00"
+      taxes: {VAT-EX: "0"}
+  total: "15000.00"
+  postings:
+    - {account: expense, debit: "15000.00"}
+    - {account: trade_payables, credit: "15000.00"}
+  boxes:
+    VAT-RETURN: {"5": "15000.00"}

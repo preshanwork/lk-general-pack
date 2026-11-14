@@ -1,0 +1,29 @@
+id: "02"
+title: "Services sale entered tax-inclusive"
+date: 2026-09-15
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: yes
+  sscl_activity: services
+lines:
+  - {description: "Retainer, VAT included", amount: "59000.00", amount_type: inclusive, codes: [VAT-STD, SSCL-SVC]}
+working: |
+  Inclusive amount 59000.00 at VAT 18%: net estimate = 59000.00 / 1.18 = 50000.00
+  VAT = 50000.00 x 18% = 9000.00; net = 59000.00 - 9000.00 = 50000.00
+  SSCL (services): 50000.00 x 1 x 2.5% = 1250.00, borne by the business
+  Total = 59000.00
+expected:
+  lines:
+    - net: "50000.00"
+      taxes: {VAT-STD: "9000.00", SSCL-SVC: "1250.00"}
+  total: "59000.00"
+  postings:
+    - {account: trade_receivables, debit: "59000.00"}
+    - {account: revenue, credit: "50000.00"}
+    - {account: output_tax_control, credit: "9000.00"}
+    - {account: sscl_expense, debit: "1250.00"}
+    - {account: sscl_payable, credit: "1250.00"}
+  boxes:
+    VAT-RETURN: {"1": "50000.00", "4": "9000.00"}
+    SSCL-RETURN: {"1": "50000.00", "2": "1250.00"}

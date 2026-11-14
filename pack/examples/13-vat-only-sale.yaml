@@ -1,0 +1,25 @@
+id: "13"
+title: "VAT-only service sale"
+date: 2026-08-05
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: no
+  sscl_activity: services
+lines:
+  - {description: Services, amount: "250000.00", amount_type: exclusive, codes: [VAT-STD]}
+working: |
+  Not liable to SSCL, so no SSCL code.
+  VAT: 250000.00 x 18% = 45000.00
+  Total = 250000.00 + 45000.00 = 295000.00
+expected:
+  lines:
+    - net: "250000.00"
+      taxes: {VAT-STD: "45000.00"}
+  total: "295000.00"
+  postings:
+    - {account: trade_receivables, debit: "295000.00"}
+    - {account: revenue, credit: "250000.00"}
+    - {account: output_tax_control, credit: "45000.00"}
+  boxes:
+    VAT-RETURN: {"1": "250000.00", "4": "45000.00"}

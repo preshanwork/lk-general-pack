@@ -1,0 +1,26 @@
+id: "15"
+title: "Zero-rated and exempt lines on one invoice"
+date: 2026-08-07
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: no
+  sscl_activity: services
+lines:
+  - {description: Exported goods, amount: "300000.00", amount_type: exclusive, codes: [VAT-ZERO]}
+  - {description: Exempt service, amount: "150000.00", amount_type: exclusive, codes: [VAT-EX]}
+working: |
+  Zero-rated line: VAT 0.00. Exempt line: no VAT.
+  Total = 300000.00 + 150000.00 = 450000.00
+expected:
+  lines:
+    - net: "300000.00"
+      taxes: {VAT-ZERO: "0.00"}
+    - net: "150000.00"
+      taxes: {VAT-EX: "0"}
+  total: "450000.00"
+  postings:
+    - {account: trade_receivables, debit: "450000.00"}
+    - {account: revenue, credit: "450000.00"}
+  boxes:
+    VAT-RETURN: {"2": "300000.00", "3": "150000.00"}

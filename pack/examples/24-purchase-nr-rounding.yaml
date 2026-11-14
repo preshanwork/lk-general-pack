@@ -1,0 +1,26 @@
+id: "24"
+title: "Unrecoverable VAT, rounding edge"
+date: 2026-09-08
+document: purchase_bill
+answers:
+  registered_vat: yes
+  sscl_liable: no
+  sscl_activity: services
+lines:
+  - {description: Item A, amount: "2.75", amount_type: exclusive, codes: [VAT-NR]}
+  - {description: Item B, amount: "2.75", amount_type: exclusive, codes: [VAT-NR]}
+working: |
+  Each line VAT: 2.75 x 18% = 0.495, rounded half up = 0.50, not recoverable
+  Expense = 5.50 + 0.50 + 0.50 = 6.50; owed to supplier = 6.50
+expected:
+  lines:
+    - net: "2.75"
+      taxes: {VAT-NR: "0.50"}
+    - net: "2.75"
+      taxes: {VAT-NR: "0.50"}
+  total: "6.50"
+  postings:
+    - {account: expense, debit: "6.50"}
+    - {account: trade_payables, credit: "6.50"}
+  boxes:
+    VAT-RETURN: {"5": "5.50"}

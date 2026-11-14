@@ -1,0 +1,25 @@
+id: "14"
+title: "VAT-inclusive sale where the net absorbs rounding"
+date: 2026-08-06
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: no
+  sscl_activity: services
+lines:
+  - {description: Package price, amount: "1000.00", amount_type: inclusive, codes: [VAT-STD]}
+working: |
+  Inclusive amount 1000.00 at VAT 18%: net estimate = 1000.00 / 1.18 = 847.4576...
+  VAT = 847.4576... x 18% = 152.5423..., rounded = 152.54
+  Net = 1000.00 - 152.54 = 847.46 (the net absorbs the rounding)
+expected:
+  lines:
+    - net: "847.46"
+      taxes: {VAT-STD: "152.54"}
+  total: "1000.00"
+  postings:
+    - {account: trade_receivables, debit: "1000.00"}
+    - {account: revenue, credit: "847.46"}
+    - {account: output_tax_control, credit: "152.54"}
+  boxes:
+    VAT-RETURN: {"1": "847.46", "4": "152.54"}

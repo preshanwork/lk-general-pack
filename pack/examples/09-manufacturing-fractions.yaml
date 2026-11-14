@@ -1,0 +1,28 @@
+id: "09"
+title: "Manufacturer sale with fractions that need rounding"
+date: 2026-10-07
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: yes
+  sscl_activity: manufacturing
+lines:
+  - {description: Goods made, amount: "12345.67", amount_type: exclusive, codes: [VAT-STD, SSCL-MFG]}
+working: |
+  VAT: 12345.67 x 18% = 2222.2206, rounded = 2222.22
+  SSCL base: 12345.67 x 17/20 = 10493.8195; SSCL = 10493.8195 x 2.5% = 262.3454875, rounded = 262.35, borne by the business
+  Total = 12345.67 + 2222.22 = 14567.89
+expected:
+  lines:
+    - net: "12345.67"
+      taxes: {VAT-STD: "2222.22", SSCL-MFG: "262.35"}
+  total: "14567.89"
+  postings:
+    - {account: trade_receivables, debit: "14567.89"}
+    - {account: revenue, credit: "12345.67"}
+    - {account: output_tax_control, credit: "2222.22"}
+    - {account: sscl_expense, debit: "262.35"}
+    - {account: sscl_payable, credit: "262.35"}
+  boxes:
+    VAT-RETURN: {"1": "12345.67", "4": "2222.22"}
+    SSCL-RETURN: {"1": "12345.67", "2": "262.35"}

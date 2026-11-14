@@ -1,0 +1,28 @@
+id: "04"
+title: "Retail sale: VAT and SSCL on half the turnover"
+date: 2026-08-12
+document: sale_invoice
+answers:
+  registered_vat: yes
+  sscl_liable: yes
+  sscl_activity: retail_wholesale
+lines:
+  - {description: Goods, amount: "80000.00", amount_type: exclusive, codes: [VAT-STD, SSCL-RW]}
+working: |
+  VAT: 80000.00 x 18% = 14400.00
+  SSCL base (retail and wholesale, 50% liable): 80000.00 x 1/2 = 40000.00; SSCL = 40000.00 x 2.5% = 1000.00, borne by the business
+  Total = 80000.00 + 14400.00 = 94400.00
+expected:
+  lines:
+    - net: "80000.00"
+      taxes: {VAT-STD: "14400.00", SSCL-RW: "1000.00"}
+  total: "94400.00"
+  postings:
+    - {account: trade_receivables, debit: "94400.00"}
+    - {account: revenue, credit: "80000.00"}
+    - {account: output_tax_control, credit: "14400.00"}
+    - {account: sscl_expense, debit: "1000.00"}
+    - {account: sscl_payable, credit: "1000.00"}
+  boxes:
+    VAT-RETURN: {"1": "80000.00", "4": "14400.00"}
+    SSCL-RETURN: {"1": "80000.00", "2": "1000.00"}
