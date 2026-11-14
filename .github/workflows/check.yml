@@ -1,0 +1,36 @@
+name: Check statutory pack
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Check the fictional example pack
+        run: python checker/validate.py examples/examplia
+
+      - name: Run the checker's own tests
+        if: github.repository == 'golejjer/accountants-toolkit'
+        run: python -m unittest discover tests
+
+      - name: Check your pack
+        run: |
+          if [ "$GITHUB_REPOSITORY" = "golejjer/accountants-toolkit" ]; then
+            echo "This is the toolkit itself, which holds only the empty template, so there is no pack to check."
+          elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            python checker/validate.py --repo . --tag "$GITHUB_REF_NAME"
+          else
+            python checker/validate.py --repo .
+          fi
